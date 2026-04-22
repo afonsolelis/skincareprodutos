@@ -18,18 +18,22 @@
         body { font-family: 'Inter', sans-serif; background-color: var(--perola); color: var(--apple-black); }
         h1, h2, h3 { font-family: 'Playfair Display', serif; }
         .glass { background: rgba(250, 250, 250, 0.8); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); }
-        .product-card { transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); background: white; }
-        .product-card:hover { transform: translateY(-8px) scale(1.02); box-shadow: 0 20px 40px rgba(0,0,0,0.04); }
+        .product-card { transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); background: white; cursor: pointer; }
+        .product-card:hover { transform: translateY(-4px) scale(1.01); box-shadow: 0 15px 30px rgba(0,0,0,0.03); }
         .btn-rosegold { background-color: var(--rosegold); color: white; transition: opacity 0.3s ease; }
         .btn-rosegold:hover { opacity: 0.9; }
         .text-rosegold { color: var(--rosegold); }
-        .bg-quartz-soft { background-color: var(--quartz); }
+        
+        /* Modal Styles */
+        #modal-overlay { transition: opacity 0.4s ease; }
+        #modal-content { transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); }
+        .modal-glass { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px); }
     </style>
 </head>
 <body class="antialiased">
 
-    <!-- Sticky Header with Glassmorphism -->
-    <header class="glass sticky top-0 z-50 py-6 px-8 flex justify-between items-center border-b border-gray-100">
+    <!-- Sticky Header -->
+    <header class="glass sticky top-0 z-40 py-6 px-8 flex justify-between items-center border-b border-gray-100">
         <div class="text-2xl font-bold tracking-tight text-rosegold">G&C</div>
         <nav class="hidden md:flex space-x-12 text-[11px] font-medium tracking-[0.2em] text-gray-500">
             <a href="#" class="hover:text-rosegold transition">ESSENCIAIS</a>
@@ -43,157 +47,162 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
             </button>
-            <button class="text-gray-400 hover:text-rosegold transition">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-                </svg>
-            </button>
         </div>
     </header>
 
     <!-- Hero Section -->
-    <section class="max-w-7xl mx-auto px-6 py-20 md:py-32 flex flex-col items-center text-center">
+    <section class="max-w-7xl mx-auto px-6 py-20 flex flex-col items-center text-center">
         <span class="text-rosegold font-semibold tracking-[0.3em] text-[10px] mb-6 uppercase">Pele Radiante por Natureza</span>
-        <h1 class="text-5xl md:text-7xl lg:text-8xl mb-8 leading-[1.1] text-apple-black">A nova era do <br><span class="italic text-rosegold">autocuidado</span>.</h1>
-        <p class="text-apple-gray text-lg md:text-xl max-w-2xl mb-12 leading-relaxed font-light">
-            Inspirada na suavidade das pétalas e no brilho do entardecer. 
-            Uma curadoria minimalista para quem busca o extraordinário.
+        <h1 class="text-5xl md:text-7xl mb-8 leading-[1.1] text-apple-black font-bold">Vitrine de <span class="italic text-rosegold">Beleza</span>.</h1>
+        <p class="text-apple-gray text-lg max-w-2xl mb-12 font-light leading-relaxed">
+            Nossa coleção completa, agora organizada para sua melhor visualização.
+            Toque em um produto para descobrir sua essência.
         </p>
-        <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-6">
-            <a href="#loja" class="btn-rosegold px-12 py-4 rounded-full text-xs font-bold tracking-widest uppercase">Comprar Agora</a>
-            <a href="#" class="px-12 py-4 rounded-full text-xs font-bold tracking-widest uppercase border border-gray-200 text-apple-black hover:bg-white transition">Saiba Mais</a>
-        </div>
     </section>
 
-    <!-- Large Visual Banner -->
-    <section class="px-6 mb-32">
-        <div class="max-w-7xl mx-auto h-[600px] rounded-[3rem] overflow-hidden bg-quartz-soft relative group">
-            <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1556228578-0d85b1a4d571?ixlib=rb-1.2.1&auto=format&fit=crop&w=1920&q=90')] bg-cover bg-center mix-blend-multiply opacity-40 group-hover:scale-105 transition duration-[2s]"></div>
-            <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
-                <h2 class="text-white text-8xl md:text-[12rem] font-bold opacity-20 select-none">GLOW</h2>
-            </div>
-        </div>
-    </section>
-
-    <!-- Featured Products -->
-    <main id="loja" class="max-w-7xl mx-auto px-6 pb-32">
-        <div class="flex flex-col md:flex-row md:items-end justify-between mb-20">
-            <div class="max-w-xl">
-                <h2 class="text-4xl md:text-5xl mb-6 leading-tight">Nossa seleção de <br><span class="text-rosegold">favoritos</span>.</h2>
-                <p class="text-apple-gray font-light">Fórmulas limpas, embalagens sustentáveis e resultados visíveis. Projetado para se adaptar ao seu estilo de vida.</p>
-            </div>
-            <a href="#" class="text-rosegold text-xs font-bold tracking-widest uppercase border-b border-rosegold pb-1 mt-8 md:mt-0 hover:opacity-70 transition">Ver todos os produtos</a>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+    <!-- Product List (Vertical) -->
+    <main class="max-w-4xl mx-auto px-6 pb-32">
+        <div id="product-list" class="flex flex-col space-y-12">
+            <!-- Cards will be injected by JavaScript or manually listed here -->
             
-            <!-- Card 1 -->
-            <a href="#" class="product-card rounded-[2.5rem] p-4 group">
-                <div class="aspect-[1/1.2] rounded-[2rem] overflow-hidden bg-[#F2F2F7] relative mb-8">
-                    <img src="https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" alt="Sérum C+" class="w-full h-full object-cover group-hover:scale-110 transition duration-[1s]">
-                    <div class="absolute top-6 left-6 px-4 py-1.5 glass rounded-full text-[10px] font-bold tracking-widest text-rosegold">NEW</div>
+            <!-- Exemplo Manua de Card Vertical -->
+            <div onclick="openModal('Sérum Revitalizante', 'assets/0B95BB01-8AAB-46CB-B2BF-CA72B9F2C4F2 2.PNG', 'R$ 129,00')" class="product-card flex flex-col md:flex-row items-center rounded-[2.5rem] overflow-hidden group p-6">
+                <div class="w-full md:w-64 h-64 flex-shrink-0 rounded-[2rem] overflow-hidden bg-gray-50 mb-6 md:mb-0">
+                    <img src="assets/0B95BB01-8AAB-46CB-B2BF-CA72B9F2C4F2 2.PNG" class="w-full h-full object-cover group-hover:scale-105 transition duration-700">
                 </div>
-                <div class="px-4 pb-4">
-                    <h3 class="text-2xl mb-2">Sérum Revitalizante C+</h3>
-                    <p class="text-apple-gray text-sm mb-6 font-light leading-relaxed">Pele luminosa e protegida contra os danos urbanos.</p>
-                    <div class="flex justify-between items-center">
-                        <span class="text-lg font-medium text-apple-black">R$ 129,00</span>
-                        <div class="w-10 h-10 rounded-full border border-gray-100 flex items-center justify-center group-hover:bg-rosegold group-hover:border-rosegold transition-all duration-300">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-300 group-hover:text-white transition" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                            </svg>
-                        </div>
-                    </div>
+                <div class="md:ml-10 text-center md:text-left">
+                    <span class="text-[10px] text-rosegold font-bold uppercase tracking-widest mb-2 block">Novidade</span>
+                    <h3 class="text-3xl mb-3 text-apple-black">Sérum Revitalizante</h3>
+                    <p class="text-apple-gray font-light text-sm mb-6 max-w-md">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+                    <span class="text-xl font-medium text-apple-black block md:inline-block">R$ 129,00</span>
                 </div>
-            </a>
+            </div>
 
-            <!-- Card 2 -->
-            <a href="#" class="product-card rounded-[2.5rem] p-4 group">
-                <div class="aspect-[1/1.2] rounded-[2rem] overflow-hidden bg-[#F2F2F7] relative mb-8">
-                    <img src="https://images.unsplash.com/photo-1598440947619-2c35fc9aa908?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" alt="Creme Noite" class="w-full h-full object-cover group-hover:scale-110 transition duration-[1s]">
+            <div onclick="openModal('Creme Hidratante Noite', 'assets/13419911-7A7F-4CF6-910F-E8C8C84BFB61 2.PNG', 'R$ 89,00')" class="product-card flex flex-col md:flex-row items-center rounded-[2.5rem] overflow-hidden group p-6">
+                <div class="w-full md:w-64 h-64 flex-shrink-0 rounded-[2rem] overflow-hidden bg-gray-50 mb-6 md:mb-0">
+                    <img src="assets/13419911-7A7F-4CF6-910F-E8C8C84BFB61 2.PNG" class="w-full h-full object-cover group-hover:scale-105 transition duration-700">
                 </div>
-                <div class="px-4 pb-4">
-                    <h3 class="text-2xl mb-2">Hidratante Profundo</h3>
-                    <p class="text-apple-gray text-sm mb-6 font-light leading-relaxed">Uma barreira de hidratação invisível e sedosa.</p>
-                    <div class="flex justify-between items-center">
-                        <span class="text-lg font-medium text-apple-black">R$ 89,00</span>
-                        <div class="w-10 h-10 rounded-full border border-gray-100 flex items-center justify-center group-hover:bg-rosegold group-hover:border-rosegold transition-all duration-300">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-300 group-hover:text-white transition" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                            </svg>
-                        </div>
-                    </div>
+                <div class="md:ml-10 text-center md:text-left">
+                    <span class="text-[10px] text-apple-gray font-bold uppercase tracking-widest mb-2 block">Hidratação</span>
+                    <h3 class="text-3xl mb-3 text-apple-black">Creme Hidratante Noite</h3>
+                    <p class="text-apple-gray font-light text-sm mb-6 max-w-md">Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                    <span class="text-xl font-medium text-apple-black block md:inline-block">R$ 89,00</span>
                 </div>
-            </a>
+            </div>
 
-            <!-- Card 3 -->
-            <a href="#" class="product-card rounded-[2.5rem] p-4 group">
-                <div class="aspect-[1/1.2] rounded-[2rem] overflow-hidden bg-[#F2F2F7] relative mb-8">
-                    <img src="https://images.unsplash.com/photo-1601049541289-9b1b7bbbfe19?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" alt="Tônico" class="w-full h-full object-cover group-hover:scale-110 transition duration-[1s]">
-                    <div class="absolute top-6 left-6 px-4 py-1.5 glass rounded-full text-[10px] font-bold tracking-widest text-rosegold">BESTSELLER</div>
+            <div onclick="openModal('Tônico Purificante', 'assets/1938C314-466B-4D2A-AF4B-E9C35A08CAD0 2.PNG', 'R$ 55,00')" class="product-card flex flex-col md:flex-row items-center rounded-[2.5rem] overflow-hidden group p-6">
+                <div class="w-full md:w-64 h-64 flex-shrink-0 rounded-[2rem] overflow-hidden bg-gray-50 mb-6 md:mb-0">
+                    <img src="assets/1938C314-466B-4D2A-AF4B-E9C35A08CAD0 2.PNG" class="w-full h-full object-cover group-hover:scale-105 transition duration-700">
                 </div>
-                <div class="px-4 pb-4">
-                    <h3 class="text-2xl mb-2">Tônico Purificante</h3>
-                    <p class="text-apple-gray text-sm mb-6 font-light leading-relaxed">O equilíbrio perfeito entre pureza e frescor.</p>
-                    <div class="flex justify-between items-center">
-                        <span class="text-lg font-medium text-apple-black">R$ 55,00</span>
-                        <div class="w-10 h-10 rounded-full border border-gray-100 flex items-center justify-center group-hover:bg-rosegold group-hover:border-rosegold transition-all duration-300">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-300 group-hover:text-white transition" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                            </svg>
-                        </div>
-                    </div>
+                <div class="md:ml-10 text-center md:text-left">
+                    <span class="text-[10px] text-rosegold font-bold uppercase tracking-widest mb-2 block">Bestseller</span>
+                    <h3 class="text-3xl mb-3 text-apple-black">Tônico Purificante</h3>
+                    <p class="text-apple-gray font-light text-sm mb-6 max-w-md">Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
+                    <span class="text-xl font-medium text-apple-black block md:inline-block">R$ 55,00</span>
                 </div>
-            </a>
+            </div>
+            
+            <!-- Adicionando mais alguns dos assets listados -->
+            <div onclick="openModal('Gel de Limpeza', 'assets/2A3D7DF0-8910-4EC0-8ED3-7549A0EB8D2B 2.PNG', 'R$ 65,00')" class="product-card flex flex-col md:flex-row items-center rounded-[2.5rem] overflow-hidden group p-6">
+                <div class="w-full md:w-64 h-64 flex-shrink-0 rounded-[2rem] overflow-hidden bg-gray-50 mb-6 md:mb-0">
+                    <img src="assets/2A3D7DF0-8910-4EC0-8ED3-7549A0EB8D2B 2.PNG" class="w-full h-full object-cover group-hover:scale-105 transition duration-700">
+                </div>
+                <div class="md:ml-10 text-center md:text-left">
+                    <span class="text-[10px] text-apple-gray font-bold uppercase tracking-widest mb-2 block">Limpeza</span>
+                    <h3 class="text-3xl mb-3 text-apple-black">Gel de Limpeza</h3>
+                    <p class="text-apple-gray font-light text-sm mb-6 max-w-md">Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+                    <span class="text-xl font-medium text-apple-black block md:inline-block">R$ 65,00</span>
+                </div>
+            </div>
+
+            <div onclick="openModal('Máscara de Argila', 'assets/2ACFFBF8-DBAC-402D-AA3F-53A71DE180F5 2.PNG', 'R$ 78,00')" class="product-card flex flex-col md:flex-row items-center rounded-[2.5rem] overflow-hidden group p-6">
+                <div class="w-full md:w-64 h-64 flex-shrink-0 rounded-[2rem] overflow-hidden bg-gray-50 mb-6 md:mb-0">
+                    <img src="assets/2ACFFBF8-DBAC-402D-AA3F-53A71DE180F5 2.PNG" class="w-full h-full object-cover group-hover:scale-105 transition duration-700">
+                </div>
+                <div class="md:ml-10 text-center md:text-left">
+                    <span class="text-[10px] text-apple-gray font-bold uppercase tracking-widest mb-2 block">Tratamento</span>
+                    <h3 class="text-3xl mb-3 text-apple-black">Máscara de Argila</h3>
+                    <p class="text-apple-gray font-light text-sm mb-6 max-w-md">Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.</p>
+                    <span class="text-xl font-medium text-apple-black block md:inline-block">R$ 78,00</span>
+                </div>
+            </div>
 
         </div>
     </main>
 
-    <!-- Footer -->
-    <footer class="bg-white border-t border-gray-100 py-32 px-6">
-        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-start">
-            <div class="mb-16 md:mb-0">
-                <h2 class="text-4xl font-bold text-rosegold mb-8">Glow & Care.</h2>
-                <p class="text-apple-gray max-w-xs font-light leading-relaxed mb-12">Redefinindo os padrões de beleza através da pureza e do design.</p>
-                <div class="flex space-x-8">
-                    <a href="#" class="text-apple-black hover:text-rosegold transition"><span class="text-[10px] font-bold tracking-widest uppercase">Instagram</span></a>
-                    <a href="#" class="text-apple-black hover:text-rosegold transition"><span class="text-[10px] font-bold tracking-widest uppercase">Pinterest</span></a>
-                </div>
+    <!-- Popup Modal -->
+    <div id="modal-overlay" class="fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/20 opacity-0 pointer-events-none" onclick="closeModal()">
+        <div id="modal-content" class="modal-glass max-w-3xl w-full rounded-[3rem] overflow-hidden shadow-2xl scale-90 flex flex-col md:flex-row" onclick="event.stopPropagation()">
+            <div class="w-full md:w-1/2 h-80 md:h-auto bg-gray-50 relative">
+                <img id="modal-img" src="" class="w-full h-full object-cover">
+                <button onclick="closeModal()" class="absolute top-6 right-6 md:hidden w-10 h-10 glass rounded-full flex items-center justify-center text-apple-black">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
             </div>
-            <div class="grid grid-cols-2 sm:grid-cols-3 gap-12 md:gap-24">
-                <div>
-                    <h4 class="text-[10px] font-bold tracking-widest uppercase mb-8 text-apple-gray">Shop</h4>
-                    <ul class="space-y-4 text-sm font-light text-apple-black">
-                        <li><a href="#" class="hover:text-rosegold transition">Sérums</a></li>
-                        <li><a href="#" class="hover:text-rosegold transition">Cremes</a></li>
-                        <li><a href="#" class="hover:text-rosegold transition">Tônicos</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h4 class="text-[10px] font-bold tracking-widest uppercase mb-8 text-apple-gray">Suporte</h4>
-                    <ul class="space-y-4 text-sm font-light text-apple-black">
-                        <li><a href="#" class="hover:text-rosegold transition">Envio</a></li>
-                        <li><a href="#" class="hover:text-rosegold transition">Trocas</a></li>
-                        <li><a href="#" class="hover:text-rosegold transition">FAQ</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h4 class="text-[10px] font-bold tracking-widest uppercase mb-8 text-apple-gray">Marca</h4>
-                    <ul class="space-y-4 text-sm font-light text-apple-black">
-                        <li><a href="#" class="hover:text-rosegold transition">Nossa História</a></li>
-                        <li><a href="#" class="hover:text-rosegold transition">Carreiras</a></li>
-                    </ul>
+            <div class="w-full md:w-1/2 p-10 md:p-14 flex flex-col justify-center relative">
+                <button onclick="closeModal()" class="hidden md:flex absolute top-10 right-10 w-10 h-10 hover:bg-gray-100 rounded-full items-center justify-center text-gray-400 transition">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+                <span class="text-rosegold font-semibold tracking-[0.2em] text-[10px] mb-4 uppercase">Detalhes do Produto</span>
+                <h2 id="modal-title" class="text-4xl mb-6 text-apple-black"></h2>
+                <div class="h-px w-12 bg-rosegold mb-8"></div>
+                <p class="text-apple-gray font-light leading-relaxed mb-10">
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam id arcu eros. 
+                    Maecenas tristique diam id ante vulputate, ac gravida dui accumsan. 
+                    Vivamus feugiat, enim a efficitur egestas, nunc purus gravida justo.
+                </p>
+                <div class="flex items-center justify-between">
+                    <span id="modal-price" class="text-2xl font-medium text-apple-black"></span>
+                    <button class="btn-rosegold px-8 py-3 rounded-full text-[10px] font-bold tracking-widest uppercase shadow-lg shadow-pink-100">Adicionar</button>
                 </div>
             </div>
         </div>
-        <div class="max-w-7xl mx-auto mt-32 pt-8 border-t border-gray-50 flex flex-col sm:flex-row justify-between text-[10px] font-medium text-gray-400 tracking-widest uppercase">
-            <p>&copy; 2026 Glow & Care. Designed for clarity.</p>
-            <div class="flex space-x-6 mt-4 sm:mt-0">
-                <a href="#" class="hover:text-apple-black transition">Privacidade</a>
-                <a href="#" class="hover:text-apple-black transition">Termos</a>
-            </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-gray-100 py-20 px-8 text-center">
+        <h2 class="text-3xl font-bold text-rosegold mb-6">Glow & Care.</h2>
+        <p class="text-apple-gray text-xs font-light mb-10 tracking-widest uppercase">&copy; 2026 Designed for clarity.</p>
+        <div class="flex justify-center space-x-12 text-[10px] font-bold text-gray-400 tracking-[0.2em]">
+            <a href="#" class="hover:text-rosegold transition">INSTAGRAM</a>
+            <a href="#" class="hover:text-rosegold transition">PINTEREST</a>
+            <a href="#" class="hover:text-rosegold transition">PRIVACIDADE</a>
         </div>
     </footer>
+
+    <script>
+        function openModal(title, img, price) {
+            const overlay = document.getElementById('modal-overlay');
+            const content = document.getElementById('modal-content');
+            
+            document.getElementById('modal-title').innerText = title;
+            document.getElementById('modal-img').src = img;
+            document.getElementById('modal-price').innerText = price;
+            
+            overlay.classList.remove('opacity-0', 'pointer-events-none');
+            overlay.classList.add('opacity-100');
+            content.classList.remove('scale-90');
+            content.classList.add('scale-100');
+            
+            document.body.style.overflow = 'hidden'; // Bloqueia o scroll do fundo
+        }
+
+        function closeModal() {
+            const overlay = document.getElementById('modal-overlay');
+            const content = document.getElementById('modal-content');
+            
+            overlay.classList.remove('opacity-100');
+            overlay.classList.add('opacity-0', 'pointer-events-none');
+            content.classList.remove('scale-100');
+            content.classList.add('scale-90');
+            
+            document.body.style.overflow = 'auto'; // Reativa o scroll
+        }
+    </script>
 
 </body>
 </html>
