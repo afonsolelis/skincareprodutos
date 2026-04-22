@@ -1,0 +1,108 @@
+# ───── Dependencies ─────
+node_modules/
+jspm_packages/
+bower_components/
+web_modules/
+
+# ───── Logs ─────
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+.pnpm-debug.log*
+
+# ───── Env / secrets ─────
+.env
+.env.local
+.env.*.local
+.env.development
+.env.production
+.env.test
+*.pem
+*.key
+*.crt
+.secrets/
+
+# ───── Build / output ─────
+dist/
+build/
+out/
+.next/
+.nuxt/
+.svelte-kit/
+.parcel-cache/
+.cache/
+.tmp/
+tmp/
+temp/
+coverage/
+.nyc_output/
+*.tsbuildinfo
+
+# ───── Runtime / pid ─────
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# ───── Package manager ─────
+.npm
+.yarn-integrity
+.yarn/
+.pnp.*
+.yarnrc
+
+# ───── Testing ─────
+.jest-cache/
+.vitest-cache/
+junit.xml
+
+# ───── Railway / deploy / infra ─────
+.railway/
+.vercel/
+.netlify/
+.firebase/
+.serverless/
+.terraform/
+*.tfstate
+*.tfstate.backup
+
+# ───── IDE / editor ─────
+.vscode/
+!.vscode/settings.json
+!.vscode/extensions.json
+.idea/
+*.iml
+*.swp
+*.swo
+*~
+.project
+.classpath
+.settings/
+
+# ───── OS ─────
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+ehthumbs_vista.db
+Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# ───── Uploads / local media ─────
+uploads/
+public/uploads/
+local-assets/
+
+# ───── Misc ─────
+*.bak
+*.orig
+*.rej
+.history/
+.claude/

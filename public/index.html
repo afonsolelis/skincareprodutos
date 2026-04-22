@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="pt-br" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SkinCareFriends | Pure Beauty</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --perola: #FAFAFA;
+            --rosegold: #E2A9A1;
+            --apple-black: #1D1D1F;
+            --apple-gray: #86868B;
+        }
+        body { font-family: 'Inter', sans-serif; background-color: var(--perola); color: var(--apple-black); }
+        h1, h2, h3 { font-family: 'Playfair Display', serif; }
+
+        .search-container { position: relative; display: flex; items-center: center; }
+        #search-input { width: 0; opacity: 0; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); border-bottom: 1px solid var(--rosegold); outline: none; background: transparent; padding: 0 4px; font-size: 0.875rem; color: var(--apple-black); }
+        #search-input.active { width: 180px; opacity: 1; margin-right: 12px; }
+        .search-trigger { cursor: pointer; color: var(--apple-black); transition: color 0.3s ease; }
+        .search-trigger:hover { color: var(--rosegold); }
+
+        .product-card { cursor: pointer; transition: opacity 0.4s ease, transform 0.4s ease; border-radius: 0; }
+        .product-card:hover { opacity: 0.85; transform: translateY(-2px); }
+        .product-image { width: 100%; height: auto; display: block; object-fit: contain; aspect-ratio: 1/1; }
+
+        #modal-overlay { transition: opacity 0.4s ease; }
+        #modal-content { transition: transform 0.4s cubic-bezier(0.2, 1, 0.3, 1); }
+        .modal-glass { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); }
+        .btn-action { background-color: var(--rosegold); color: white; transition: opacity 0.3s; }
+        .btn-action:hover { opacity: 0.9; }
+        .modal-product-image { width: 100%; height: 100%; object-fit: contain; background: #fff; }
+
+        .text-rosegold { color: var(--rosegold); }
+        .hidden-card { display: none; }
+
+        .skeleton { background: linear-gradient(90deg, #f3f3f3 25%, #ececec 37%, #f3f3f3 63%); background-size: 400% 100%; animation: shimmer 1.4s ease infinite; aspect-ratio: 1/1; }
+        @keyframes shimmer { 0% { background-position: 100% 50%; } 100% { background-position: 0 50%; } }
+    </style>
+</head>
+<body class="antialiased select-none">
+
+    <nav class="p-8 md:p-12 flex justify-between items-center bg-transparent max-w-7xl mx-auto">
+        <h1 class="text-2xl md:text-3xl font-bold tracking-tighter text-rosegold">SkinCareFriends</h1>
+        <div class="flex items-center gap-6">
+            <div class="search-container">
+                <input type="text" id="search-input" placeholder="Pesquisar produto..." oninput="filterProducts()">
+                <div class="search-trigger" onclick="toggleSearch()">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                </div>
+            </div>
+            <a href="/admin" class="text-[10px] font-bold text-gray-300 hover:text-rosegold tracking-[0.2em] uppercase">Admin</a>
+        </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto px-6 pb-32">
+        <div id="product-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 md:gap-16 lg:gap-20">
+            <div class="skeleton"></div>
+            <div class="skeleton"></div>
+            <div class="skeleton"></div>
+        </div>
+
+        <div id="no-results" class="hidden text-center py-20">
+            <p class="text-apple-gray font-light">Nenhum produto encontrado para sua busca.</p>
+        </div>
+
+        <div id="empty-state" class="hidden text-center py-32">
+            <p class="text-apple-gray font-light">Nenhum produto cadastrado ainda.</p>
+            <a href="/admin" class="inline-block mt-6 text-[10px] font-bold text-rosegold tracking-[0.3em] uppercase">Ir para o painel</a>
+        </div>
+    </main>
+
+    <div id="modal-overlay" class="fixed inset-0 z-50 flex items-center justify-center p-4 md:p-8 bg-black/5 opacity-0 pointer-events-none" onclick="closeModal()">
+        <div id="modal-content" class="modal-glass max-w-4xl w-full h-[90vh] md:h-auto overflow-y-auto md:overflow-hidden shadow-sm scale-95 flex flex-col md:flex-row" onclick="event.stopPropagation()">
+            <div class="w-full md:w-1/2 aspect-square md:aspect-auto bg-white">
+                <img id="modal-img" src="" class="modal-product-image">
+            </div>
+            <div class="w-full md:w-1/2 p-10 md:p-16 flex flex-col justify-center relative bg-white md:bg-transparent">
+                <button onclick="closeModal()" class="absolute top-8 right-8 text-gray-400 hover:text-rosegold transition">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+                <h2 id="modal-title" class="text-4xl md:text-5xl mb-8 tracking-tighter text-apple-black font-bold"></h2>
+                <p id="modal-description" class="text-apple-gray text-lg font-light leading-relaxed mb-12 whitespace-pre-line"></p>
+                <div class="flex items-center justify-between mt-auto">
+                    <span id="modal-price" class="text-3xl font-medium text-apple-black tracking-tight"></span>
+                    <button class="btn-action px-10 py-4 rounded-full text-xs font-bold tracking-[0.2em] uppercase">Shop Now</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="p-12 text-center border-t border-gray-50">
+        <p class="text-[10px] font-bold text-gray-300 tracking-[0.3em] uppercase">&copy; 2026 SkinCareFriends</p>
+    </footer>
+
+    <script>
+        let products = [];
+
+        async function loadProducts() {
+            try {
+                const res = await fetch('/api/products');
+                products = await res.json();
+                renderProducts();
+            } catch (err) {
+                console.error(err);
+                document.getElementById('product-grid').innerHTML = '<p class="text-apple-gray text-center col-span-full">Erro ao carregar produtos.</p>';
+            }
+        }
+
+        function renderProducts() {
+            const grid = document.getElementById('product-grid');
+            const empty = document.getElementById('empty-state');
+            if (!products.length) {
+                grid.innerHTML = '';
+                grid.classList.add('hidden');
+                empty.classList.remove('hidden');
+                return;
+            }
+            grid.classList.remove('hidden');
+            empty.classList.add('hidden');
+            grid.innerHTML = products.map(p => `
+                <div class="product-card" data-name="${(p.name || '').toLowerCase()}" onclick='openModal(${JSON.stringify(p).replace(/'/g, "&apos;")})'>
+                    <div class="bg-white">
+                        <img src="${p.imageUrl}" alt="${escapeAttr(p.name)}" class="product-image" loading="lazy">
+                    </div>
+                    <div class="mt-4 flex justify-between items-baseline">
+                        <h3 class="text-lg font-medium tracking-tight">${escapeHtml(p.name)}</h3>
+                        <span class="text-[10px] text-rosegold font-bold uppercase tracking-widest">Discover</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function escapeHtml(s) {
+            return String(s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+        }
+        function escapeAttr(s) { return escapeHtml(s); }
+
+        function toggleSearch() {
+            const input = document.getElementById('search-input');
+            input.classList.toggle('active');
+            if (input.classList.contains('active')) input.focus();
+            else { input.value = ''; filterProducts(); }
+        }
+
+        function filterProducts() {
+            const query = document.getElementById('search-input').value.toLowerCase();
+            const cards = document.querySelectorAll('.product-card');
+            const noResults = document.getElementById('no-results');
+            let hasResults = false;
+            cards.forEach(card => {
+                const name = card.getAttribute('data-name');
+                if (name.includes(query)) { card.classList.remove('hidden-card'); hasResults = true; }
+                else { card.classList.add('hidden-card'); }
+            });
+            noResults.classList.toggle('hidden', hasResults || !cards.length);
+        }
+
+        function openModal(p) {
+            document.getElementById('modal-title').innerText = p.name || '';
+            document.getElementById('modal-img').src = p.imageUrl || '';
+            document.getElementById('modal-description').innerText = p.description || '';
+            document.getElementById('modal-price').innerText = p.price || '';
+            const overlay = document.getElementById('modal-overlay');
+            const content = document.getElementById('modal-content');
+            overlay.classList.remove('opacity-0', 'pointer-events-none');
+            overlay.classList.add('opacity-100');
+            content.classList.remove('scale-95');
+            content.classList.add('scale-100');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            const overlay = document.getElementById('modal-overlay');
+            const content = document.getElementById('modal-content');
+            overlay.classList.remove('opacity-100');
+            overlay.classList.add('opacity-0', 'pointer-events-none');
+            content.classList.remove('scale-100');
+            content.classList.add('scale-95');
+            document.body.style.overflow = 'auto';
+        }
+
+        loadProducts();
+    </script>
+</body>
+</html>

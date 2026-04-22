@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | SkinCareFriends</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,700&display=swap" rel="stylesheet">
+    <style>
+        :root { --perola:#FAFAFA; --rosegold:#E2A9A1; --apple-black:#1D1D1F; --apple-gray:#86868B; }
+        body { font-family:'Inter',sans-serif; background:var(--perola); color:var(--apple-black); }
+        h1 { font-family:'Playfair Display',serif; }
+        .input { width:100%; border:none; border-bottom:1px solid #e5e5e5; padding:12px 0; background:transparent; outline:none; transition:border-color .3s; font-size:15px; }
+        .input:focus { border-color:var(--rosegold); }
+        .btn { background:var(--rosegold); color:#fff; padding:14px; border-radius:999px; font-weight:700; letter-spacing:.2em; font-size:12px; text-transform:uppercase; transition:opacity .3s; width:100%; }
+        .btn:hover { opacity:.9; }
+        .btn:disabled { opacity:.5; cursor:not-allowed; }
+    </style>
+</head>
+<body class="antialiased min-h-screen flex flex-col">
+    <nav class="p-8 md:p-12 max-w-7xl mx-auto w-full">
+        <a href="/" class="text-2xl md:text-3xl font-bold tracking-tighter" style="color:var(--rosegold);font-family:'Playfair Display',serif">SkinCareFriends</a>
+    </nav>
+    <main class="flex-1 flex items-center justify-center px-6 pb-16">
+        <div class="w-full max-w-md">
+            <h1 class="text-4xl md:text-5xl tracking-tighter font-bold mb-3">Painel</h1>
+            <p class="text-sm mb-12" style="color:var(--apple-gray)">Acesso restrito à equipe SkinCareFriends.</p>
+
+            <form id="login-form" class="space-y-8">
+                <div>
+                    <label class="block text-[10px] font-bold tracking-[0.2em] uppercase mb-2" style="color:var(--apple-gray)">Usuário</label>
+                    <input id="username" type="text" autocomplete="username" class="input" required>
+                </div>
+                <div>
+                    <label class="block text-[10px] font-bold tracking-[0.2em] uppercase mb-2" style="color:var(--apple-gray)">Senha</label>
+                    <input id="password" type="password" autocomplete="current-password" class="input" required>
+                </div>
+                <p id="error" class="text-sm text-red-500 hidden"></p>
+                <button type="submit" id="submit-btn" class="btn">Entrar</button>
+            </form>
+        </div>
+    </main>
+    <script>
+        const form = document.getElementById('login-form');
+        const errorEl = document.getElementById('error');
+        const btn = document.getElementById('submit-btn');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            errorEl.classList.add('hidden');
+            btn.disabled = true;
+            btn.innerText = 'Entrando...';
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+            try {
+                const res = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password }),
+                });
+                const data = await res.json();
+                if (!res.ok || !data.ok) throw new Error(data.error || 'falha no login');
+                location.href = '/admin';
+            } catch (err) {
+                errorEl.innerText = err.message || 'erro';
+                errorEl.classList.remove('hidden');
+                btn.disabled = false;
+                btn.innerText = 'Entrar';
+            }
+        });
+    </script>
+</body>
+</html>

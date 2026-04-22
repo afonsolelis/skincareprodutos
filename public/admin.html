@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin | SkinCareFriends</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,700&display=swap" rel="stylesheet">
+    <style>
+        :root { --perola:#FAFAFA; --rosegold:#E2A9A1; --apple-black:#1D1D1F; --apple-gray:#86868B; }
+        body { font-family:'Inter',sans-serif; background:var(--perola); color:var(--apple-black); }
+        h1,h2,h3 { font-family:'Playfair Display',serif; }
+        .input, .textarea { width:100%; border:none; border-bottom:1px solid #e5e5e5; padding:12px 0; background:transparent; outline:none; transition:border-color .3s; font-size:15px; font-family:inherit; }
+        .textarea { border:1px solid #e5e5e5; padding:12px; border-radius:12px; resize:vertical; min-height:120px; }
+        .input:focus, .textarea:focus { border-color:var(--rosegold); }
+        .btn { background:var(--rosegold); color:#fff; padding:14px 28px; border-radius:999px; font-weight:700; letter-spacing:.2em; font-size:12px; text-transform:uppercase; transition:opacity .3s; }
+        .btn:hover { opacity:.9; }
+        .btn:disabled { opacity:.5; cursor:not-allowed; }
+        .btn-ghost { color:var(--apple-black); background:transparent; border:1px solid #e5e5e5; }
+        .btn-danger { background:#fff; color:#e53e3e; border:1px solid #fed7d7; padding:8px 16px; border-radius:999px; font-size:11px; font-weight:700; letter-spacing:.15em; text-transform:uppercase; transition:all .3s; }
+        .btn-danger:hover { background:#fff5f5; }
+        .btn-edit { background:#fff; color:var(--apple-black); border:1px solid #e5e5e5; padding:8px 16px; border-radius:999px; font-size:11px; font-weight:700; letter-spacing:.15em; text-transform:uppercase; transition:all .3s; }
+        .btn-edit:hover { border-color:var(--rosegold); color:var(--rosegold); }
+        .card { background:#fff; border-radius:20px; padding:24px; box-shadow:0 10px 40px rgba(0,0,0,.03); }
+        .dropzone { border:2px dashed #e5e5e5; border-radius:16px; padding:40px 20px; text-align:center; cursor:pointer; transition:all .3s; }
+        .dropzone:hover, .dropzone.drag { border-color:var(--rosegold); background:#fffaf9; }
+        .preview { max-height:200px; margin:0 auto; border-radius:8px; }
+        .toast { position:fixed; bottom:32px; left:50%; transform:translateX(-50%); background:var(--apple-black); color:#fff; padding:14px 28px; border-radius:999px; font-size:13px; z-index:100; opacity:0; transition:opacity .3s; pointer-events:none; }
+        .toast.show { opacity:1; }
+        .toast.err { background:#e53e3e; }
+    </style>
+</head>
+<body class="antialiased">
+
+<nav class="p-8 md:p-12 flex justify-between items-center max-w-7xl mx-auto">
+    <a href="/" class="text-2xl md:text-3xl font-bold tracking-tighter" style="color:var(--rosegold);font-family:'Playfair Display',serif">SkinCareFriends</a>
+    <div class="flex items-center gap-6">
+        <a href="/" class="text-[10px] font-bold tracking-[0.2em] uppercase" style="color:var(--apple-gray)">Ver site</a>
+        <button onclick="logout()" class="text-[10px] font-bold tracking-[0.2em] uppercase hover:text-red-500" style="color:var(--apple-gray)">Sair</button>
+    </div>
+</nav>
+
+<main class="max-w-6xl mx-auto px-6 pb-32">
+    <header class="mb-12">
+        <h1 class="text-4xl md:text-5xl tracking-tighter font-bold">Painel de Produtos</h1>
+        <p class="text-sm mt-2" style="color:var(--apple-gray)">Cadastre, edite ou remova produtos da vitrine.</p>
+    </header>
+
+    <section class="card mb-16">
+        <h2 class="text-2xl tracking-tight font-bold mb-8" id="form-title">Novo produto</h2>
+        <form id="product-form" class="space-y-8">
+            <input type="hidden" id="product-id">
+            <div class="grid md:grid-cols-2 gap-8">
+                <div>
+                    <label class="block text-[10px] font-bold tracking-[0.2em] uppercase mb-2" style="color:var(--apple-gray)">Nome</label>
+                    <input id="name" class="input" required>
+                </div>
+                <div>
+                    <label class="block text-[10px] font-bold tracking-[0.2em] uppercase mb-2" style="color:var(--apple-gray)">Preço (opcional)</label>
+                    <input id="price" class="input" placeholder="R$ 149,00">
+                </div>
+            </div>
+            <div>
+                <label class="block text-[10px] font-bold tracking-[0.2em] uppercase mb-2" style="color:var(--apple-gray)">Descrição</label>
+                <textarea id="description" class="textarea" required></textarea>
+            </div>
+            <div>
+                <label class="block text-[10px] font-bold tracking-[0.2em] uppercase mb-3" style="color:var(--apple-gray)">Imagem</label>
+                <label class="dropzone block" id="dropzone">
+                    <input type="file" id="image" accept="image/*" class="hidden">
+                    <div id="dropzone-text">
+                        <p class="text-sm" style="color:var(--apple-gray)">Clique ou arraste a imagem aqui</p>
+                        <p class="text-xs mt-1" style="color:var(--apple-gray)">JPG, PNG, WEBP — até 10MB</p>
+                    </div>
+                    <img id="preview" class="preview hidden">
+                </label>
+            </div>
+            <div class="flex items-center gap-4 pt-4">
+                <button type="submit" id="submit-btn" class="btn">Salvar</button>
+                <button type="button" id="cancel-btn" class="btn btn-ghost hidden" onclick="resetForm()">Cancelar</button>
+            </div>
+        </form>
+    </section>
+
+    <section>
+        <h2 class="text-2xl tracking-tight font-bold mb-8">Produtos cadastrados</h2>
+        <div id="list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
+        <p id="empty" class="text-center py-16 hidden" style="color:var(--apple-gray)">Nenhum produto ainda.</p>
+    </section>
+</main>
+
+<div id="toast" class="toast"></div>
+
+<script>
+    const form = document.getElementById('product-form');
+    const idEl = document.getElementById('product-id');
+    const nameEl = document.getElementById('name');
+    const priceEl = document.getElementById('price');
+    const descEl = document.getElementById('description');
+    const imageEl = document.getElementById('image');
+    const preview = document.getElementById('preview');
+    const dzText = document.getElementById('dropzone-text');
+    const dz = document.getElementById('dropzone');
+    const submitBtn = document.getElementById('submit-btn');
+    const cancelBtn = document.getElementById('cancel-btn');
+    const formTitle = document.getElementById('form-title');
+
+    imageEl.addEventListener('change', () => showPreview(imageEl.files[0]));
+
+    ['dragenter','dragover'].forEach(ev => dz.addEventListener(ev, e => { e.preventDefault(); dz.classList.add('drag'); }));
+    ['dragleave','drop'].forEach(ev => dz.addEventListener(ev, e => { e.preventDefault(); dz.classList.remove('drag'); }));
+    dz.addEventListener('drop', e => {
+        if (e.dataTransfer.files.length) {
+            imageEl.files = e.dataTransfer.files;
+            showPreview(e.dataTransfer.files[0]);
+        }
+    });
+
+    function showPreview(file) {
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = e => {
+            preview.src = e.target.result;
+            preview.classList.remove('hidden');
+            dzText.classList.add('hidden');
+        };
+        reader.readAsDataURL(file);
+    }
+
+    function resetForm() {
+        form.reset();
+        idEl.value = '';
+        preview.classList.add('hidden');
+        preview.src = '';
+        dzText.classList.remove('hidden');
+        formTitle.innerText = 'Novo produto';
+        submitBtn.innerText = 'Salvar';
+        cancelBtn.classList.add('hidden');
+    }
+
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const id = idEl.value;
+        if (!id && !imageEl.files[0]) return toast('Selecione uma imagem.', true);
+
+        const fd = new FormData();
+        fd.append('name', nameEl.value.trim());
+        fd.append('price', priceEl.value.trim());
+        fd.append('description', descEl.value.trim());
+        if (imageEl.files[0]) fd.append('image', imageEl.files[0]);
+
+        submitBtn.disabled = true;
+        submitBtn.innerText = 'Salvando...';
+        try {
+            const res = await fetch(id ? `/api/products/${id}` : '/api/products', {
+                method: id ? 'PUT' : 'POST',
+                body: fd,
+            });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error || 'erro');
+            toast(id ? 'Produto atualizado.' : 'Produto criado.');
+            resetForm();
+            loadList();
+        } catch (err) {
+            toast(err.message, true);
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.innerText = id ? 'Salvar' : 'Salvar';
+        }
+    });
+
+    async function loadList() {
+        try {
+            const res = await fetch('/api/products');
+            const items = await res.json();
+            const list = document.getElementById('list');
+            const empty = document.getElementById('empty');
+            if (!items.length) { list.innerHTML = ''; empty.classList.remove('hidden'); return; }
+            empty.classList.add('hidden');
+            list.innerHTML = items.map(p => `
+                <div class="card">
+                    <div class="bg-[#fafafa] rounded-xl overflow-hidden mb-4">
+                        <img src="${p.imageUrl}" class="w-full aspect-square object-contain" loading="lazy">
+                    </div>
+                    <h3 class="text-lg font-medium tracking-tight mb-1">${esc(p.name)}</h3>
+                    <p class="text-xs mb-3" style="color:var(--rosegold)">${esc(p.price || '')}</p>
+                    <p class="text-sm line-clamp-3 mb-5" style="color:var(--apple-gray)">${esc(p.description)}</p>
+                    <div class="flex items-center gap-2">
+                        <button class="btn-edit" onclick='editProduct(${JSON.stringify(p).replace(/'/g,"&apos;")})'>Editar</button>
+                        <button class="btn-danger" onclick="deleteProduct('${p._id}')">Remover</button>
+                    </div>
+                </div>
+            `).join('');
+        } catch (err) {
+            toast('Erro ao carregar.', true);
+        }
+    }
+
+    function editProduct(p) {
+        idEl.value = p._id;
+        nameEl.value = p.name || '';
+        priceEl.value = p.price || '';
+        descEl.value = p.description || '';
+        preview.src = p.imageUrl;
+        preview.classList.remove('hidden');
+        dzText.classList.add('hidden');
+        formTitle.innerText = 'Editar produto';
+        submitBtn.innerText = 'Atualizar';
+        cancelBtn.classList.remove('hidden');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    async function deleteProduct(id) {
+        if (!confirm('Remover este produto?')) return;
+        try {
+            const res = await fetch(`/api/products/${id}`, { method: 'DELETE' });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error || 'erro');
+            toast('Produto removido.');
+            loadList();
+        } catch (err) {
+            toast(err.message, true);
+        }
+    }
+
+    async function logout() {
+        await fetch('/api/auth/logout', { method: 'POST' });
+        location.href = '/login';
+    }
+
+    function esc(s) {
+        return String(s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    }
+
+    let toastTimer;
+    function toast(msg, err = false) {
+        const el = document.getElementById('toast');
+        el.innerText = msg;
+        el.classList.toggle('err', err);
+        el.classList.add('show');
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => el.classList.remove('show'), 2800);
+    }
+
+    loadList();
+</script>
+</body>
+</html>
