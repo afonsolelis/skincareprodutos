@@ -31,6 +31,9 @@
         .modal-glass { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); }
         .btn-action { background-color: var(--rosegold); color: white; transition: opacity 0.3s; }
         .btn-action:hover { opacity: 0.9; }
+        .btn-whatsapp { background-color: var(--rosegold); color: white; transition: opacity 0.3s; display: inline-flex; align-items: center; gap: 10px; }
+        .btn-whatsapp:hover { opacity: 0.9; }
+        .btn-whatsapp svg { width: 18px; height: 18px; }
         .modal-product-image { width: 100%; height: 100%; object-fit: contain; background: #fff; }
 
         .text-rosegold { color: var(--rosegold); }
@@ -85,11 +88,16 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12" />
                     </svg>
                 </button>
-                <h2 id="modal-title" class="text-4xl md:text-5xl mb-8 tracking-tighter text-apple-black font-bold"></h2>
+                <h2 id="modal-title" class="text-4xl md:text-5xl mb-8 tracking-tighter text-rosegold font-bold"></h2>
                 <p id="modal-description" class="text-apple-gray text-lg font-light leading-relaxed mb-12 whitespace-pre-line"></p>
-                <div class="flex items-center justify-between mt-auto">
+                <div class="flex items-center justify-between mt-auto gap-4 flex-wrap">
                     <span id="modal-price" class="text-3xl font-medium text-apple-black tracking-tight"></span>
-                    <button class="btn-action px-10 py-4 rounded-full text-xs font-bold tracking-[0.2em] uppercase">Shop Now</button>
+                    <a id="wa-link" href="https://wa.me/5511978101179" target="_blank" rel="noopener" class="btn-whatsapp px-10 py-4 rounded-full text-xs font-bold tracking-[0.2em] uppercase">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                            <path d="M17.47 14.38c-.3-.15-1.76-.87-2.03-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.94 1.17-.17.2-.35.22-.65.07-.3-.15-1.26-.46-2.4-1.48-.89-.79-1.49-1.77-1.66-2.07-.17-.3-.02-.46.13-.61.13-.13.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.07-.15-.67-1.62-.92-2.22-.24-.58-.49-.5-.67-.51l-.57-.01c-.2 0-.52.07-.79.37-.27.3-1.04 1.02-1.04 2.48 0 1.46 1.06 2.87 1.21 3.07.15.2 2.09 3.19 5.06 4.47.71.31 1.26.5 1.69.64.71.23 1.35.2 1.86.12.57-.08 1.76-.72 2.01-1.41.25-.7.25-1.29.17-1.41-.07-.12-.27-.2-.57-.35Zm-5.44 7.4h-.01a9.87 9.87 0 0 1-5.03-1.38l-.36-.21-3.74.98 1-3.64-.23-.37A9.86 9.86 0 1 1 12.03 21.78Zm8.4-18.27A11.82 11.82 0 0 0 12.02 0C5.5 0 .2 5.3.2 11.82c0 2.08.54 4.11 1.58 5.9L.1 24l6.43-1.69a11.8 11.8 0 0 0 5.5 1.4h.01c6.52 0 11.82-5.3 11.82-11.82 0-3.16-1.23-6.13-3.46-8.37Z"/>
+                        </svg>
+                        WhatsApp
+                    </a>
                 </div>
             </div>
         </div>
@@ -125,22 +133,26 @@
             grid.classList.remove('hidden');
             empty.classList.add('hidden');
             grid.innerHTML = products.map(p => `
-                <div class="product-card" data-name="${(p.name || '').toLowerCase()}" onclick='openModal(${JSON.stringify(p).replace(/'/g, "&apos;")})'>
+                <div class="product-card" data-search="${escapeAttr(normalize((p.name || '') + ' ' + (p.description || '')))}" onclick='openModal(${JSON.stringify(p).replace(/'/g, "&apos;")})'>
                     <div class="bg-white">
                         <img src="${p.imageUrl}" alt="${escapeAttr(p.name)}" class="product-image" loading="lazy">
                     </div>
                     <div class="mt-4 flex justify-between items-baseline">
-                        <h3 class="text-lg font-medium tracking-tight">${escapeHtml(p.name)}</h3>
+                        <h3 class="text-lg md:text-xl font-bold tracking-tighter text-rosegold">${escapeHtml(p.name)}</h3>
                         <span class="text-[10px] text-rosegold font-bold uppercase tracking-widest">Discover</span>
                     </div>
                 </div>
             `).join('');
+            filterProducts();
         }
 
         function escapeHtml(s) {
             return String(s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
         }
         function escapeAttr(s) { return escapeHtml(s); }
+        function normalize(s) {
+            return String(s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+        }
 
         function toggleSearch() {
             const input = document.getElementById('search-input');
@@ -150,16 +162,16 @@
         }
 
         function filterProducts() {
-            const query = document.getElementById('search-input').value.toLowerCase();
+            const query = normalize(document.getElementById('search-input').value);
             const cards = document.querySelectorAll('.product-card');
             const noResults = document.getElementById('no-results');
             let hasResults = false;
             cards.forEach(card => {
-                const name = card.getAttribute('data-name');
-                if (name.includes(query)) { card.classList.remove('hidden-card'); hasResults = true; }
+                const haystack = card.getAttribute('data-search') || '';
+                if (!query || haystack.includes(query)) { card.classList.remove('hidden-card'); hasResults = true; }
                 else { card.classList.add('hidden-card'); }
             });
-            noResults.classList.toggle('hidden', hasResults || !cards.length);
+            noResults.classList.toggle('hidden', hasResults || !cards.length || !query);
         }
 
         function openModal(p) {
@@ -167,6 +179,8 @@
             document.getElementById('modal-img').src = p.imageUrl || '';
             document.getElementById('modal-description').innerText = p.description || '';
             document.getElementById('modal-price').innerText = p.price || '';
+            const waMsg = `Olá! Tenho interesse no produto ${p.name || ''}.`;
+            document.getElementById('wa-link').href = `https://wa.me/5511978101179?text=${encodeURIComponent(waMsg)}`;
             const overlay = document.getElementById('modal-overlay');
             const content = document.getElementById('modal-content');
             overlay.classList.remove('opacity-0', 'pointer-events-none');
