@@ -150,6 +150,9 @@
                         <h3 class="text-lg md:text-xl font-bold tracking-tighter text-rosegold">${escapeHtml(p.name)}</h3>
                         <span class="text-[10px] text-rosegold font-bold uppercase tracking-widest">Discover</span>
                     </div>
+                    <p class="mt-1 text-[10px] font-bold uppercase tracking-[0.2em]" style="color:${(p.stock || 0) > 0 ? 'var(--apple-gray)' : '#e53e3e'}">
+                        ${(p.stock || 0) > 0 ? `Em estoque: ${p.stock}` : 'Esgotado'}
+                    </p>
                 </div>
             `).join('');
             filterProducts();

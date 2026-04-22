@@ -61,6 +61,10 @@
                     <label class="block text-[10px] font-bold tracking-[0.2em] uppercase mb-2" style="color:var(--apple-gray)">Preço (opcional)</label>
                     <input id="price" class="input" placeholder="R$ 149,00">
                 </div>
+                <div>
+                    <label class="block text-[10px] font-bold tracking-[0.2em] uppercase mb-2" style="color:var(--apple-gray)">Estoque</label>
+                    <input id="stock" class="input" type="number" min="0" step="1" placeholder="0" value="0">
+                </div>
             </div>
             <div>
                 <label class="block text-[10px] font-bold tracking-[0.2em] uppercase mb-2" style="color:var(--apple-gray)">Descrição</label>
@@ -98,6 +102,7 @@
     const idEl = document.getElementById('product-id');
     const nameEl = document.getElementById('name');
     const priceEl = document.getElementById('price');
+    const stockEl = document.getElementById('stock');
     const descEl = document.getElementById('description');
     const imageEl = document.getElementById('image');
     const preview = document.getElementById('preview');
@@ -132,6 +137,7 @@
     function resetForm() {
         form.reset();
         idEl.value = '';
+        stockEl.value = '0';
         preview.classList.add('hidden');
         preview.src = '';
         dzText.classList.remove('hidden');
@@ -145,9 +151,15 @@
         const id = idEl.value;
         if (!id && !imageEl.files[0]) return toast('Selecione uma imagem.', true);
 
+        const stockRaw = stockEl.value.trim();
+        if (!/^\d+$/.test(stockRaw)) {
+            return toast('Estoque deve ser um número inteiro (≥ 0).', true);
+        }
+
         const fd = new FormData();
         fd.append('name', nameEl.value.trim());
         fd.append('price', priceEl.value.trim());
+        fd.append('stock', stockRaw);
         fd.append('description', descEl.value.trim());
         if (imageEl.files[0]) fd.append('image', imageEl.files[0]);
 
@@ -185,7 +197,8 @@
                         <img src="${p.imageUrl}" class="w-full aspect-square object-contain" loading="lazy">
                     </div>
                     <h3 class="text-lg font-medium tracking-tight mb-1">${esc(p.name)}</h3>
-                    <p class="text-xs mb-3" style="color:var(--rosegold)">${esc(p.price || '')}</p>
+                    <p class="text-xs mb-1" style="color:var(--rosegold)">${esc(p.price || '')}</p>
+                    <p class="text-[10px] font-bold tracking-[0.15em] uppercase mb-3" style="color:var(--apple-gray)">Estoque: ${Number.isInteger(p.stock) ? p.stock : 0}</p>
                     <p class="text-sm line-clamp-3 mb-5" style="color:var(--apple-gray)">${esc(p.description)}</p>
                     <div class="flex items-center gap-2">
                         <button class="btn-edit" onclick='editProduct(${JSON.stringify(p).replace(/'/g,"&apos;")})'>Editar</button>
@@ -202,6 +215,7 @@
         idEl.value = p._id;
         nameEl.value = p.name || '';
         priceEl.value = p.price || '';
+        stockEl.value = Number.isInteger(p.stock) ? p.stock : 0;
         descEl.value = p.description || '';
         preview.src = p.imageUrl;
         preview.classList.remove('hidden');

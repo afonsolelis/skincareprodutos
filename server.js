@@ -9,6 +9,15 @@ const Product = require('./models/Product');
 const { cloudinary, upload } = require('./config/cloudinary');
 const { requireAuth } = require('./middleware/auth');
 
+function parseStock(value) {
+  if (value === undefined || value === null || value === '') return { ok: true, value: 0 };
+  const str = String(value).trim();
+  if (!/^\d+$/.test(str)) return { ok: false };
+  const num = Number(str);
+  if (!Number.isSafeInteger(num) || num < 0) return { ok: false };
+  return { ok: true, value: num };
+}
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -95,15 +104,20 @@ app.post(
   upload.single('image'),
   async (req, res) => {
     try {
-      const { name, description, price } = req.body;
+      const { name, description, price, stock } = req.body;
       if (!req.file) return res.status(400).json({ error: 'imagem obrigatória' });
       if (!name || !description) {
         return res.status(400).json({ error: 'nome e descrição obrigatórios' });
+      }
+      const parsedStock = parseStock(stock);
+      if (!parsedStock.ok) {
+        return res.status(400).json({ error: 'estoque deve ser um número inteiro maior ou igual a zero' });
       }
       const product = await Product.create({
         name,
         description,
         price: price || '',
+        stock: parsedStock.value,
         imageUrl: req.file.path,
         imagePublicId: req.file.filename,
       });
@@ -121,9 +135,17 @@ app.put(
   upload.single('image'),
   async (req, res) => {
     try {
-      const { name, description, price } = req.body;
+      const { name, description, price, stock } = req.body;
       const product = await Product.findById(req.params.id);
       if (!product) return res.status(404).json({ error: 'não encontrado' });
+
+      if (stock !== undefined && stock !== '') {
+        const parsedStock = parseStock(stock);
+        if (!parsedStock.ok) {
+          return res.status(400).json({ error: 'estoque deve ser um número inteiro maior ou igual a zero' });
+        }
+        product.stock = parsedStock.value;
+      }
 
       if (name !== undefined) product.name = name;
       if (description !== undefined) product.description = description;
