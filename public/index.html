@@ -37,6 +37,11 @@
         .btn-whatsapp:hover { opacity: 0.9; }
         .btn-whatsapp svg { width: 18px; height: 18px; }
         .modal-product-image { width: 100%; height: 100%; object-fit: contain; background: #fff; }
+        .modal-desc-scroll { scrollbar-width: thin; scrollbar-color: var(--rosegold) transparent; }
+        .modal-desc-scroll::-webkit-scrollbar { width: 6px; }
+        .modal-desc-scroll::-webkit-scrollbar-track { background: transparent; }
+        .modal-desc-scroll::-webkit-scrollbar-thumb { background: var(--rosegold); border-radius: 999px; opacity: 0.6; }
+        .modal-desc-scroll::-webkit-scrollbar-thumb:hover { background: #c98a82; }
 
         .text-rosegold { color: var(--rosegold); }
         .hidden-card { display: none; }
@@ -80,19 +85,21 @@
     </main>
 
     <div id="modal-overlay" class="fixed inset-0 z-50 flex items-center justify-center p-4 md:p-8 bg-black/5 opacity-0 pointer-events-none" onclick="closeModal()">
-        <div id="modal-content" class="modal-glass max-w-4xl w-full h-[90vh] md:h-auto overflow-y-auto md:overflow-hidden shadow-sm scale-95 flex flex-col md:flex-row" onclick="event.stopPropagation()">
-            <div class="w-full md:w-1/2 aspect-square md:aspect-auto bg-white">
+        <div id="modal-content" class="modal-glass max-w-4xl w-full h-[90vh] md:h-auto md:max-h-[85vh] overflow-y-auto md:overflow-hidden shadow-sm scale-95 flex flex-col md:flex-row" onclick="event.stopPropagation()">
+            <div class="w-full md:w-1/2 aspect-square md:aspect-auto bg-white flex-shrink-0">
                 <img id="modal-img" src="" class="modal-product-image">
             </div>
-            <div class="w-full md:w-1/2 p-10 md:p-16 flex flex-col justify-center relative bg-white md:bg-transparent">
-                <button onclick="closeModal()" class="absolute top-8 right-8 text-gray-400 hover:text-rosegold transition">
+            <div class="w-full md:w-1/2 p-10 md:p-16 flex flex-col relative bg-white md:bg-transparent md:max-h-[85vh] md:overflow-hidden">
+                <button onclick="closeModal()" class="absolute top-8 right-8 text-gray-400 hover:text-rosegold transition z-10">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12" />
                     </svg>
                 </button>
-                <h2 id="modal-title" class="text-4xl md:text-5xl mb-8 tracking-tighter text-rosegold font-bold"></h2>
-                <p id="modal-description" class="text-apple-gray text-lg font-light leading-relaxed mb-12 whitespace-pre-line"></p>
-                <div class="flex items-center justify-between mt-auto gap-4 flex-wrap">
+                <h2 id="modal-title" class="text-4xl md:text-5xl mb-8 tracking-tighter text-rosegold font-bold pr-10"></h2>
+                <div class="md:flex-1 md:min-h-0 md:overflow-y-auto md:pr-3 mb-12 modal-desc-scroll">
+                    <p id="modal-description" class="text-apple-gray text-lg font-light leading-relaxed whitespace-pre-line"></p>
+                </div>
+                <div class="flex items-center justify-between gap-4 flex-wrap mt-auto md:mt-0">
                     <span id="modal-price" class="text-3xl font-medium text-apple-black tracking-tight"></span>
                     <a id="wa-link" href="https://wa.me/5511978101179" target="_blank" rel="noopener" class="btn-whatsapp px-10 py-4 rounded-full text-xs font-bold tracking-[0.2em] uppercase">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
